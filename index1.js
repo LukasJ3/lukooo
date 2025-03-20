@@ -1,137 +1,70 @@
-
-const productForm = document.getElementById('productForm');
-const productList = document.getElementById('productList');
-const cartList = document.getElementById('cartList');
-const products = JSON.parse(localStorage.getItem('products')) || [];
-const cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-function displayProducts() {
-    productList.innerHTML = `
-        <tr>
-            <th>ID</th>
-            <th>Pavadinimas</th>
-            <th>Kiekis</th>
-            <th>Veiksmai</th>
-        </tr>
-    `;
-    
-    products.forEach(product => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${product.id}</td>
-            <td>${product.name}</td>
-            <td>${product.quantity}</td>
-            <td>
-                <button onclick="editProduct(${product.id})">Redaguoti</button>
-                <button onclick="deleteProduct(${product.id})">Ištrinti</button>
-                <button onclick="addToCart(${product.id})">Į krepšelį</button>
-            </td>
-        `;
-        productList.appendChild(row);
-    });
-}
-
-function displayCart() {
-    cartList.innerHTML = `
-        <tr>
-            <th>ID</th>
-            <th>Pavadinimas</th>
-            <th>Kiekis</th>
-            <th>Veiksmai</th>
-        </tr>
-    `;
-    
-    cart.forEach(item => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${item.id}</td>
-            <td>${item.name}</td>
-            <td>${item.quantity}</td>
-            <td>
-                <button onclick="removeFromCart(${item.id})">Pašalinti</button>
-            </td>
-        `;
-        cartList.appendChild(row);
-    });
-}
-
-productForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const id = document.getElementById('productId').value;
-    const name = document.getElementById('productName').value;
-    const quantity = document.getElementById('productQuantity').value;
-    
-    if (!id || !name || !quantity) {
-        alert('Visi laukai turi būti užpildyti!');
-        return;
-    }
-    
-    if (products.some(product => product.id === id)) {
-        alert('Produktas su tokiu ID jau egzistuoja!');
-        return;
-    }
-    
-    products.push({ id, name, quantity });
-    localStorage.setItem('products', JSON.stringify(products));
-    displayProducts();
-    productForm.reset();
-});
-
-function editProduct(id) {
-    const product = products.find(p => p.id === id);
-    document.getElementById('productId').value = product.id;
-    document.getElementById('productName').value = product.name;
-    document.getElementById('productQuantity').value = product.quantity;
-    
-    products.splice(products.findIndex(p => p.id === id), 1);
-    localStorage.setItem('products', JSON.stringify(products));
-    displayProducts();
-}
-
-function deleteProduct(id) {
-    products.splice(products.findIndex(p => p.id === id), 1);
-    localStorage.setItem('products', JSON.stringify(products));
-    displayProducts();
-}
-
-function addToCart(id) {
-    const product = products.find(p => p.id === id);
-    if (product.quantity > 0) {
-        product.quantity--;
-        const cartItem = cart.find(item => item.id === id);
+class ProductManager {
+    constructor() {
+        this.products = JSON.parse(localStorage.getItem('products')) || [];
+        this.form = document.getElementById('productForm');
+        this.productList = document.getElementById('productList');
         
-        if (cartItem) {
-            cartItem.quantity++;
-        } else {
-            cart.push({ ...product, quantity: 1 });
+        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+        this.displayProducts();
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        const id = document.getElementById('productId').value.trim();
+        const name = document.getElementById('productName').value.trim();
+        const quantity = document.getElementById('productQuantity').value.trim();
+
+        if (!id || !name || !quantity) {
+            alert('Užpildykite visus laukus!');
+            return;
         }
-        
-        localStorage.setItem('products', JSON.stringify(products));
-        localStorage.setItem('cart', JSON.stringify(cart));
-        displayProducts();
-        displayCart();
-    } else {
-        alert('Prekės nėra sandėlyje!');
-    }
-}
 
-function removeFromCart(id) {
-    const cartItem = cart.find(item => item.id === id);
-    const product = products.find(p => p.id === id);
-    
-    if (cartItem.quantity > 1) {
-        cartItem.quantity--;
-    } else {
-        cart.splice(cart.findIndex(item => item.id === id), 1);
+        const product = { id, name, quantity: parseInt(quantity) };
+        this.products.push(product);
+        localStorage.setItem('products', JSON.stringify(this.products));
+        this.displayProducts();
+        this.form.reset();
     }
-    
-    product.quantity++;
-    localStorage.setItem('products', JSON.stringify(products));
-    localStorage.setItem('cart', JSON.stringify(cart));
-    displayProducts();
-    displayCart();
-}
 
-displayProducts();
-displayCart();
+    displayProducts() {
+        this.productList.innerHTML = '';
+        this.products.forEach(product => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${product.id}</td>
+                <td>${product.name}</td>
+                <td>${product.quantity}</td>
+                <td>
+                    <button onclick="productManager.deleteProduct('${product.id}')">Ištrinti</button>
+                     <button onclick="productManager.addToCart('${product.id}')">Į krepšelį</button>
+                     
+                </td>
+            `;
+            this.productList.appendChild(row);
+        });
+    }
+
+    deleteProduct(id) {
+        this.products = this.products.filter(product => product.id !== id);
+        localStorage.setItem('products', JSON.stringify(this.products));
+        this.displayProducts();
+    }
+
+    addToCart(id) {
+        const product = this.products.find(p => p.id === id);
+        if (product && product.quantity > 0) {
+            product.quantity--;
+            localStorage.setItem('products', JSON.stringify(this.products));
+            this.displayProducts();
+            
+            const cartItems = document.getElementById('cartItems');
+            const cartItem = document.createElement('div');
+            cartItem.textContent = product.name;
+            cartItems.appendChild(cartItem);
+        }
+    }
+
+
+        }
+    
+const productManager = new ProductManager();

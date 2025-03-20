@@ -1,97 +1,56 @@
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
     font-family: Arial, sans-serif;
-    line-height: 1.6;
-    background-color: #f4f4f4;
+    background-image: linear-gradient(to right, rgb(167, 122, 122), rgb(105, 96, 180), rgb(158, 110, 177))
 }
-
-.container {
-    width: 80%;
-    margin: auto;
-    overflow: hidden;
-    padding: 20px;
-}
-
-header {
-    background: #333;
-    color: #fff;
-    padding: 1rem;
+h1 {
     text-align: center;
 }
 
-nav {
-    background: #444;
-    padding: 0.5rem;
+form {
+    margin-bottom: 20px;
 }
 
-nav ul {
-    list-style: none;
+input {
+    margin: 5px;
+    padding: 5px;
 }
 
-nav ul li {
-    display: inline;
-    margin-right: 10px;
-}
-
-nav ul li a {
-    color: #fff;
-    text-decoration: none;
-}
-
-.main-content {
-    background: #fff;
-    padding: 20px;
-    margin-top: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-.footer {
-    background: #333;
-    color: #fff;
-    text-align: center;
-    padding: 1rem;
-    position: fixed;
-    bottom: 0;
+table {
     width: 100%;
+    border-collapse: collapse;
+    border-radius: 20px;
+    margin-bottom: 25px;
 }
 
+th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+   background-color: #f2f2f2;
+   border:1px solid
+}
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
 button {
-    background: #333;
-    color: #fff;
+    background-color: #4CAF50;
+    color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
-
-button:hover {
-    background: #555;
+#found-items {
+    margin-top: 20px;
 }
-
-input[type="text"],
-input[type="email"],
-textarea {
-    width: 100%;
-    padding: 8px;
-    margin: 5px 0;
+.cart {
+    margin-top: 20px;
+    padding: 20px;
     border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-    }
-    
-    nav ul li {
-        display: block;
-        margin: 5px 0;
-    }
 }
